@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Jader</title>
-    <link>http://example.org/</link>
+    <link>http://jadetao.github.io/</link>
     <description>Recent content on Jader</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Wed, 01 Aug 2018 19:56:52 +0800</lastBuildDate>
     
-	<atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://jadetao.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>关于闭包(上篇)</title>
-      <link>http://example.org/post/closure1/</link>
+      <link>http://jadetao.github.io/post/closure1/</link>
       <pubDate>Wed, 01 Aug 2018 19:56:52 +0800</pubDate>
       
-      <guid>http://example.org/post/closure1/</guid>
+      <guid>http://jadetao.github.io/post/closure1/</guid>
       <description>为什么写这篇文章：网上关于闭包的解释五花八门，很多人自己往往也未清楚闭包，就尝试用蹩脚的语言去描述它，而闭包是一个相对抽象的、跨越语言的概念，网上的这些说法往往夹带了JS的私货。所以本篇是我整理的三点关于闭包的权威资料，并没有自己的私货。下面的资料有一些有趣的分歧，如果你发现了并且有兴趣与我探讨一下，欢迎联系我。
 一、MDN 英文版：
 Closures are functions that refer to independent (free) variables (variables that are used locally, but defined in an enclosing scope). In other words, these functions &amp;lsquo;remember&amp;rsquo; the environment in which they were created.
