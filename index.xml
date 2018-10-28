@@ -6,10 +6,19 @@
     <description>Recent content on Jader</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 01 Aug 2018 19:56:52 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 28 Oct 2018 22:26:52 +0800</lastBuildDate>
     
 	<atom:link href="http://jadetao.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>EOS in ReactNativ</title>
+      <link>http://jadetao.github.io/post/eos-in-rn/</link>
+      <pubDate>Sun, 28 Oct 2018 22:26:52 +0800</pubDate>
+      
+      <guid>http://jadetao.github.io/post/eos-in-rn/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>关于闭包(上篇)</title>
