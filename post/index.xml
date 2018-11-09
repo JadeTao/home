@@ -6,19 +6,10 @@
     <description>Recent content in Posts on Jader</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 28 Oct 2018 22:26:52 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 01 Aug 2018 19:56:52 +0800</lastBuildDate>
     
 	<atom:link href="http://jadetao.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>EOS in ReactNativ</title>
-      <link>http://jadetao.github.io/post/eos-in-rn/</link>
-      <pubDate>Sun, 28 Oct 2018 22:26:52 +0800</pubDate>
-      
-      <guid>http://jadetao.github.io/post/eos-in-rn/</guid>
-      <description></description>
-    </item>
     
     <item>
       <title>关于闭包(上篇)</title>
@@ -41,6 +32,19 @@ Closures (闭包)是使用被作用域封闭的变量，函数，闭包等执行
 三丶历史上闭包的第一次定义 闭包这个概念第一次出现在1964年的《The Computer Journal》上，由P. J. Landin在《The mechanical evaluation of expressions》一文中提出了applicative expression和closure的概念。
 文中AE的概念定义如下：
  We are, therefore, interested in a class of expressions about any one of which it is appropriate to ask the following questions:</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://jadetao.github.io/post/eos-in-rn/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://jadetao.github.io/post/eos-in-rn/</guid>
+      <description>EOS in ReactNative 最近遇到了要在 ReactNative 中使用 eosjs 的需求，官方只提供了 node 环境（CommonJS）和 browser 环境（UMD）的包，而 ReactNative 的模块系统则是 node-haste，一个类似 CommonJS 的模块系统。写篇文章记录一下问题的解决过程，文章内不再赘述 CommonJS AMD UMD等模块系统的区别和应用。
+背景 EOS，可以理解为 Enterprise Operation System，即为商用分布式应用设计的一款区块链操作系统。EOS 是引入的一种新的区块链架构，旨在实现分布式应用的性能扩展，被称为区块链3.0。
+EOS的核心组成是 nodeos 和 cleos。nodeos 是运行在服务端的区块链节点组件，是 EOSIO 系统的核心进程，可以通过它运行一个节点。nodeos 运行后会暴露出一系列 http 接口，官方称之为 rpc API，可以通过其进行查询及 push transaction 等操作。cleos 是对链进行操作的命令行工具，本质上也是在调用 nodeos 暴露出来的API，但功能更丰富，可以进行管理钱包、创建账户等敏感性操作。cleos 可以通过指定链的 API 地址来对不同的链进行操作，这更说明cleos本质上调用了 nodeos 暴露的 API。
+CRUD，除了检索外，所有涉及状态的变更都是由 action 完成的，action 和 contract 在 EOS 中发挥着重要的角色。DAPP 的重中之重是逻辑的编织和逻辑的调用，前者通过编写 contract 丰富 action 的种类完成，后者通过在 DAPP 的 client 使用EOS的SDK发起各种action完成。
+EOS SDK 目前，EOS 官方提供的支持度最高的是 JavaScript 版本的 SDK，eosjs。eosjs 主要由两个子包，eosjs-api 和 eosjs-ecc组成，eosjs-api 负责 http api 调用的部分(主要是 GET 的部分)，eosjs-ecc 负责加密和签名的部分。NPM 仓库中的 eosjs 只能在 node 环境中使用，它使用了 CommonJS 格式，而且它的核心加密模块eosjs-ecc使用了大量 node 的 built-in module，例如 buffer、assert 和 crypto。所以不经过处理，eosjs 只能在node环境中运行。</description>
     </item>
     
   </channel>
