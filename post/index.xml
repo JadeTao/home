@@ -6,10 +6,27 @@
     <description>Recent content in Posts on Jader</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 09 Nov 2018 22:26:52 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 19 Dec 2018 15:21:55 +0800</lastBuildDate>
     
 	<atom:link href="http://jadetao.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>TypeScript 中继承的实现</title>
+      <link>http://jadetao.github.io/post/how-does-typescript-entend/</link>
+      <pubDate>Wed, 19 Dec 2018 15:21:55 +0800</pubDate>
+      
+      <guid>http://jadetao.github.io/post/how-does-typescript-entend/</guid>
+      <description>TypeScript 中继承的实现 TL;DR
+末尾有总结。
+这篇文章我会探究 TypeScript 中 extends 的实现机理。
+在 JavaScript 中实现继承是一个比较古老的话题，也是垃圾文章的重灾区。诚然现如今我们可以在 tsc 加持的 TypeScript 和 babel 加持的 ES Next 中简单地使用 class extends 关键字实现继承，但理解如何在 ES5 中如何使用 prototype 与 [[Prototype]]] 实现继承更能增加自己对 JavaScript 较细粒度上的理解。
+广泛使用的方案其正确性也毋庸置疑，因此本文将以 TypeScript class extends 转换成的 ES5 代码作为重点分析。
+ 之所以不分析 babel 的方案只是因为笔者更喜欢 TypeScript。
+ 背景 面对对象编程（Object-oriented programming）是一种有对象概念的编程范式，也是一种程序开发的抽象方针。
+它是一种范式，体现在某个具体的语言上则有不同的风格，比如说 Java、C++、Python 中的基于类（class）的面向对象风格，以及 JavaScript、Lua、Self 中的基于原型（prototype）的面向对象风格。
+ 这里多说一句，JavaScript 的设计主要受到了 Self 和 Scheme 的影响，Self 语言是在 SmallTalk 语言的基础上发展而来的，StrongTalk 是 SmallTalk 的高性能 VM，而 JavaScript 性能最好的引擎 V8 又是吸收了 HotSpot 和 StrongTalk 的精华，V8 的仓库里至今仍有 StrongTalk 的 license。</description>
+    </item>
     
     <item>
       <title>EOS in ReactNative</title>

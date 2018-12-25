@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  
+  <meta charset="utf-8">
+  <title>TypeScript 中继承的实现 - Jader</title>
+  <meta name="description" content="TypeScript 中继承的实现">
+  <meta name="author" content="Jader Tao">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="http://jadetao.github.io/css/fonts.css">
+  
+  
+  <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.1/build/pure-min.css" integrity="sha384-CCTZv2q9I9m3UOxRLaJneXrrqKwUNOzZ6NGEUMwHtShDJ+nCoiXJCAgi05KfkLGY" crossorigin="anonymous">
+  
+  
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.1/build/grids-responsive-min.css">
+  
+  <link rel="stylesheet" href="http://jadetao.github.io/css/custom.css">
+
+  
+  
+  <link rel="stylesheet" href="http://jadetao.github.io/highlight/styles/github-gist.css">
+  
+  <script src="http://jadetao.github.io/highlight/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <meta name="generator" content="Hugo 0.45.1" />
+  
+</head>
+<body>
+
+<div class="header pure-g">
+    <div class="pure-u-1-24 pure-u-md-5-24"></div>
+    <div class="pure-u-11-12 pure-u-md-5-8">
+        <div class="desktop pure-menu pure-menu-horizontal nav-menu">
+            
+            <a href="http://jadetao.github.io/" class="site-title pure-menu-heading">Jader</a>
+            <ul class="pure-menu-list">
+				
+                <li class="pure-menu-item">
+                    <a href="http://jadetao.github.io/about/" class="pure-menu-link">About</a>
+                </li>
+            </ul>
+        </div>
+        <div class="mobile pure-menu nav-menu">
+            <a href="/" class="pure-menu-heading" id="toggle-home">Jader</a>
+            <a href="#" id="toggle-btn">&#9776;</a>
+            <ul class="pure-menu-list" id="toggle-content" style="display:none;">
+                
+				
+                <li class="pure-menu-item">
+                    <a href="http://jadetao.github.io/about" class="pure-menu-link">About</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="pure-u-1-24 pure-u-md-1-6"></div>
+</div>
+
+<div class="pure-g">
+    <div class="pure-u-1-24 pure-u-md-5-24"></div>
+	<div class="pure-u-11-12 pure-u-md-5-8">
+        <div class="post">
+
+            <div class="post-title">
+                <p class="footnote">
+                    <time class="">2018-12-19</time>
+		            
+                    
+                    
+
+                    
+
+                    
+                </p>
+                <h1>TypeScript 中继承的实现</h1>
+            </div>
+
+            <div class="post-content">
+                
+
+<h1 id="typescript-中继承的实现">TypeScript 中继承的实现</h1>
+
+<p>TL;DR</p>
+
+<p>末尾有总结。</p>
+
+<p>这篇文章我会探究 TypeScript 中 extends 的实现机理。</p>
+
+<p>在 JavaScript 中实现继承是一个比较古老的话题，也是垃圾文章的重灾区。诚然现如今我们可以在 tsc 加持的 TypeScript 和 babel 加持的 ES Next 中简单地使用 class extends 关键字实现继承，但理解如何在 ES5 中如何使用 <code>prototype</code> 与 <code>[[Prototype]]</code>] 实现继承更能增加自己对 JavaScript 较细粒度上的理解。</p>
+
+<p>广泛使用的方案其正确性也毋庸置疑，因此本文将以 TypeScript class extends 转换成的 ES5 代码作为重点分析。</p>
+
+<blockquote>
+<p>之所以不分析 babel 的方案只是因为笔者更喜欢 TypeScript。</p>
+</blockquote>
+
+<h2 id="背景">背景</h2>
+
+<p>面对对象编程（Object-oriented programming）是一种有对象概念的编程范式，也是一种程序开发的抽象方针。</p>
+
+<p>它是一种范式，体现在某个具体的语言上则有不同的风格，比如说 Java、C++、Python 中的基于类（class）的面向对象风格，以及  JavaScript、Lua、Self 中的基于原型（prototype）的面向对象风格。</p>
+
+<blockquote>
+<p>这里多说一句，JavaScript 的设计主要受到了 Self 和 Scheme 的影响，Self 语言是在 SmallTalk 语言的基础上发展而来的，StrongTalk 是 SmallTalk 的高性能 VM，而 JavaScript 性能最好的引擎 V8 又是吸收了 HotSpot 和 StrongTalk 的精华，V8 的仓库里至今仍有 StrongTalk 的 <a href="https://github.com/v8/v8/blob/master/LICENSE.strongtalk">license</a>。</p>
+</blockquote>
+
+<h2 id="原料">原料</h2>
+
+<p>把简单的 TypeScript 继承语句用 tsc 编译成 ES5，<a href="http://www.typescriptlang.org/play/index.html#src=class%20Foo%20%7B%7D%0D%0Aclass%20Bar%20extends%20Foo%20%7B%7D">参考这里</a>。</p>
+
+<pre><code class="language-javascript">// TypeScript
+class Foo {
+    static value: number = 1
+    public foo: number
+    constructor() {
+        this.foo = 1
+    }
+    add1(v: number): number {
+        return 1 + v
+    }
+}
+class Bar extends Foo {
+    static subValue: number = 2
+    constructor() {
+        super()
+        console.log(this.foo);
+    }
+}
+
+// -------
+// TSC 编译
+// -------
+
+// ES5
+var __extends = (this &amp;&amp; this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({__proto__: [] } instanceof Array &amp;&amp; function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d;}
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Foo = /** @class */ (function () {
+    function Foo() {
+        this.foo = 1;
+    }
+    Foo.prototype.add1 = function (v) {
+        return 1 + v;
+    };
+    Foo.value = 1;
+    return Foo;
+}());
+var Bar = /** @class */ (function (_super) {
+    __extends(Bar, _super);
+    function Bar() {
+        var _this = _super.call(this) || this;
+        console.log(_this.foo);
+        return _this;
+    }
+    Bar.subValue = 2;
+    return Bar;
+}(Foo));
+</code></pre>
+
+<p>好了，开始对代码的分析，step by step，statement bt statement，expression by expression。</p>
+
+<h2 id="源码分析">源码分析</h2>
+
+<p>类的属性和方法分两部分，静态属性和方法以及成员属性和方法。静态属性和方法体现为类构造函数的属性及方法，成员属性和方法体现为类构造函数的 <code>prototype</code> 对象的属性及方法。</p>
+
+<h3 id="extends-的实现">extends 的实现</h3>
+
+<p>顶层声明的 <code>__extends</code> 函数毫无疑问是 <code>extends</code> 的 polyfill 实现。</p>
+
+<h4 id="一">一、</h4>
+
+<pre><code class="language-javascript">(this &amp;&amp; this.__extends) || (function () {...})()
+</code></pre>
+
+<p>这里是防止 <code>__extends</code> 函数的重复声明。<code>||</code> 左侧判断当前上下文是否存在及当前上下文中是否有 <code>__extends</code> 函数。若皆满足条件，则直接返回 <code>this.extends</code>；若不满足，则重新声明该函数，<code>||</code> 右边的函数即其函数体。</p>
+
+<ul>
+<li>this 是谁？</li>
+</ul>
+
+<p>在 JavaScript 中，除非特殊指定，this 的指向的 <code>context object</code> 由调用时的对象和上下文决定，表现与 dynamic scope 相似。（而闭包的建立是 lexical scope/static scope）</p>
+
+<ul>
+<li>为什么先要判断 this 是否存在？</li>
+</ul>
+
+<p>严格模式下，this 若指向全局执行上下文，则会被置为 undefined。</p>
+
+<pre><code class="language-javascript">(function(){'use strict';console.log(this);})() // undefined
+(function(){console.log(this);})()              // Window
+</code></pre>
+
+<ul>
+<li>this.__extends 有问题吗？</li>
+</ul>
+
+<p>有。如果 this 环境对象中已有 <code>__extends</code> 变量或属性，且其值是 Truthy 的，那 <code>__extends</code> 会被错误地赋值。不过绝大多数情况下 TypeScript 会把控所有代码细节，不会出现冗余的 <code>__extends</code> 变量或属性。</p>
+
+<h4 id="二">二、</h4>
+
+<pre><code class="language-javascript">(function () {
+  var extendStatics = function (d, b) {
+      extendStatics = Object.setPrototypeOf ||
+          ({__proto__: [] } instanceof Array &amp;&amp; function (d, b) { d.__proto__ = b; }) ||
+          function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+      return extendStatics(d, b);
+  };
+
+  // 返回匿名函数，赋给 __extends，为方便表述，记该匿名函数为 A 函数
+  return function (d, b) {
+      extendStatics(d, b);
+      function __() { this.constructor = d;}
+      d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+})()
+</code></pre>
+
+<p>嗯。。。这段代码读起来没那么复杂，但是讲解起来比较麻烦，我们来慢慢看。</p>
+
+<p>主要有 10 点：</p>
+
+<h4> 第 0 点 </h4>
+
+<p>最外层是一个 IIFE（Immediately Invoked Function Expression，即时调用的函数表达式），函数体内声明了 <code>extendStatics</code> 函数，根据名字来看是用来继承 class 的静态属性和方法。</p>
+
+<pre><code class="language-javascript">var extendStatics = function (d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({__proto__: [] } instanceof Array &amp;&amp; function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return extendStatics(d, b);
+};
+</code></pre>
+
+<p>这是一个 <code>function expression</code>，声明变量 <code>extendStatics</code> 为一个函数，参数 d 为子类，b 为父类。</p>
+
+<p>函数体中将 <code>extendStatics</code> 重新赋值为一个新的函数 (该函数将子类的 <code>[[Prototype]]</code> 赋值为父类构造函数) 并随后调用了一次，重新赋值的目的：</p>
+
+<ul>
+<li>这其实是一个用完即毁的初始化函数，一方面实现了 <code>extendStatics</code> 的初始化，且将初始化语句限制在函数作用域内。另一方面只要调用一次后，变量 <code>extendStatics</code> 被指向了另外一个函数引用，没有变量再保持对原来初始化函数的引用，这样无论是引用计数还是标记清除，失去了可达性的初始化函数所占的内存可以被引擎快速回收。</li>
+</ul>
+
+<p>来具体看一下初始化过程：</p>
+
+<p><1> 方案一，如果当前环境支持 <code>Object.setPrototypeOf</code> 则直接将其赋给 <code>extendStatics</code>，否则进行下一步判断；</p>
+
+<p><2> 方案二，判断 <code>({ __proto__: [] }) instanceof Array</code>，如果 <code>true</code>，将 <code>function (d, b) { d.__proto__ = b; })</code> 赋给 <code>extendStatics</code>，否则进行下一步判断；</p>
+
+<p>这里以 <code>V instanceof F</code> 为例，额外讲一下 <code>instanceof</code>，不做实验，一切以标准、规范和引擎的实现为第一优先级：</p>
+
+<blockquote>
+<p><a href="http://ecma-international.org/ecma-262/5.1/#sec-11.8.6">ECMA-262 标准介绍 instanceof 操作符</a>： <code>instanceof</code> 操作符会返回 <code>B</code> 内部 <code>[[HasInstance]]</code> 方法以 <code>A</code> 为参数的调用结果；</p>
+
+<p>ECMA-262 标准介绍 <code>HasInstance</code>：(1)<a href="http://ecma-international.org/ecma-262/5.1/#sec-15.3.5.3">12.10.4Runtime Semantics: InstanceofOperator ( V, target )</a> ，(2)<a href="http://www.ecma-international.org/ecma-262/#sec-function.prototype-@@hasinstance">19.2.3.6Function.prototype <a href="V"> @@hasInstance </a></a> ，(3)<a href="http://www.ecma-international.org/ecma-262/#sec-well-known-symbols">6.1.5.1 Well-Known Symbols 表格的第二行</a>；</p>
+
+<p>V8 对  <a href="https://github.com/v8/v8/blob/3b0f8243d00f4055456cb21d2a5dbe0fe85c4bd9/src/builtins/builtins-function-gen.cc#L197">ES6 #sec-function.prototype-@@hasinstance 的实现</a> 和对 <a href="https://github.com/v8/v8/blob/master/src/objects.cc#L787">OrdinaryHasInstance</a> 的实现；</p>
+</blockquote>
+
+<p>总结一下，求值表达式 <code>V instanceof F</code> 时，会计算 <code>F</code> 内部 <code>[[HasInstance]]</code> 方法以 <code>V</code> 为参数的调用结果，<code>F</code> 内部 <code>[[HasInstance]]</code> 方法是通过 <code>Symbol.hasInstance</code> 部署实现的，所以 <code>V instanceof F</code> 等同于调用 <code>F[Symbol.hasInstance](V)</code>。</p>
+
+<p><code>Symbol.hasInstance</code> 会按固定的顺序检测：</p>
+
+<p>① 如果 <code>V</code> 不是一个 <code>object</code>，返回 <code>false</code>;</p>
+
+<p>② 计 <code>O</code> 为 <code>F.prototype</code>；</p>
+
+<p>③ 如果 <code>typeof O !== 'object'</code>，抛出 <strong>TypeError</strong> 异常；</p>
+
+<p>④ 循环：a，令 <code>V</code> 值为 <code>V</code> 的 <code>[[Prototype]]</code> 属性值，即 <code>V = V.__proto__</code>；b，如果 <code>V === null</code>，返回 <code>false</code>；c，如果 <code>O</code> 和 <code>V</code> 是对同一对象的引用，返回 <code>true</code>.</p>
+
+<p>ok，讲解完成，我们再回到 <code>({__proto__: [] }) instanceof Array</code>，按照上面的逻辑显然：</p>
+
+<pre><code class="language-javascript">Array[Symbol.hasInstance]({__proto__:[]})
+</code></pre>
+
+<p>即计算</p>
+
+<pre><code class="language-javascript">({__proto__: [] }).__proto__ === Array.prototype // false
+</code></pre>
+
+<p>这一步，未满足跳出循环条件，进入下一步循环，计算</p>
+
+<pre><code class="language-javascript">({__proto__: [] }).__proto__.__proto__ === Array.prototype // true
+</code></pre>
+
+<p>返回 <code>true</code>，循环结束，计算完成。</p>
+
+<p>结束 <code>instanceof</code> 的讲解，让我们把思绪拉回至初始化函数的步骤 <2>:</p>
+
+<pre><code class="language-javascript"> ({__proto__: [] } instanceof Array &amp;&amp; function (d, b) { d.__proto__ = b; })
+</code></pre>
+
+<p>这一步是为了检测当前环境是否允许直接通过字面量直接设置对象的 <code>__proty__</code>aka <code>[[Prototype]]</code>，如果允许，则将 <code>extendsStatics</code> 直接定义为右侧函数，该函数将子类 <code>__proto__</code> 指向父类的构造函数；如不允许，进入最终方案。</p>
+
+<p><3> 最终方案，将静态属性一一复制过去，用 <code>hasOwnProperty</code> 过滤掉原型链（<code>__proto__</code>）上的属性。</p>
+
+<blockquote>
+<p>需要注意的是，前两种方案都是把静态属性所在的对象（即父类的构造函数）委托至子类（的构造函数的 <code>__proto__</code> 属性）上，而第三种方案是把父类本身的构造函数上的静态属性一一复制到子类的构造函数本身。</p>
+</blockquote>
+
+<h4> 第 10 点 </h4>
+
+<p>继承函数本体</p>
+
+<pre><code class="language-javascript">  // 返回匿名函数，赋给 __extends，为方便表述，记该匿名函数为 A 函数
+  return function (d, b) {
+      extendStatics(d, b);
+      function __() { this.constructor = d;}
+      d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+</code></pre>
+
+<p>这个函数主要实现了：调用 <code>extendStatics</code> 继承静态属性，然后在父类为 <code>null</code> 时直接使用 <code>Object.create</code> 实现继承，在父类不为 <code>null</code> 时使用空函数对象 <code>__</code> 作为中介继承成员属性，并修正 <code>constructor</code>。</p>
+
+<p>为什么要用空函数对象做中介？</p>
+
+<pre><code class="language-javascript">// 有中介
+d.prototype -&gt; new __()
+(new __()).__proto__ -&gt; __.prototype -&gt; b.prototype
+即实现了 d.prototype.__proto__ -&gt; __.prototype -&gt; b.prototype
+
+// 无中介 (还有其他无中介的方法，请参考阮一峰的文章，此处只举例最基础的一种)
+d.prototype -&gt; new b()
+(new b()).__proto__ -&gt; b.prototype
+即实现了 d.prototype.__proto__ -&gt; b.prototype
+
+</code></pre>
+
+<p>首先两者都可以实现对成员属性和函数的继承，且父类 <code>prototype</code> 一旦更新，子类都会即时受到影响。
+有中介的 ** 优势 ** 在于：只需 new 空函数，不需 new 父类，一定程度省了内存。</p>
+
+<p>不过无论是那种方式，只要直接修改子类的 <code>prototype</code> 引用都会影响 <code>constructor</code>，对语义和 JS 的一些内部实现（不包括 <code>instanceof</code>，见上）产生干扰。因此需要 <code>d.prototype.constructor = d</code>，这就是 <code>this.constructor = d;</code> 起的作用。</p>
+
+<h4 id="三">三、</h4>
+
+<p>至此 <code>__extends</code> 函数已分析完，来看一下使用：</p>
+
+<pre><code class="language-javascript">var Foo = /** @class */ (function () {
+    function Foo() {
+        this.foo = 1;
+    }
+    Foo.prototype.add1 = function (v) {
+        return 1 + v;
+    };
+    Foo.value = 1;
+    return Foo;
+}());
+var Bar = /** @class */ (function (_super) {
+    __extends(Bar, _super);
+    function Bar() {
+        var _this = _super.call(this) || this;
+        console.log(_this.foo);
+        return _this;
+    }
+    Bar.subValue = 2;
+    return Bar;
+}(Foo));
+</code></pre>
+
+<p>发现除了先调用 <code>__extends</code> 外，还在子类的构造函数内调用父类的构造函数来复用父类的一些逻辑（事实上，如果不调用 <code>super</code>，TypeScript 会直接在静态分析时抛出错误：<code>派生类的构造函数必须包含 &quot;super&quot; 调用。</code>）。这里也处理了构造函数的返回值问题。</p>
+
+<h2 id="总结">总结</h2>
+
+<h3 id="复用">复用：</h3>
+
+<ol>
+<li><p>静态属性及方法</p>
+
+<ul>
+<li><p><code>Object.setPrototypeOf</code></p></li>
+
+<li><p><code>function (d, b) { d.__proto__ = b; })</code></p></li>
+
+<li><p><code>function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; }</code></p></li>
+</ul>
+
+<p>依次优雅降级。</p></li>
+
+<li><p>成员属性及方法</p></li>
+</ol>
+
+<p>通过一个空函数对象增加了一层原型链委托节点。</p>
+
+<ol>
+<li>父类构造函数</li>
+</ol>
+
+<p>在声明 <code>constructor</code> 的子类，TypeScript 会强制其调用 <code>super</code> 来调用父类构造函数的逻辑。</p>
+
+<h3 id="需要注意的点">需要注意的点</h3>
+
+<ol>
+<li><p>更改 <code>prototype</code> 的引用需要修正 <code>constructor</code>。</p></li>
+
+<li><p>原则上 class 一旦被声明就不应该被增删属性，TypeScript 没有做出源码级别的限制，但是会在静态分析时直接报错。限制了灵活性，增加了规范性，各有利弊。</p></li>
+</ol>
+
+<h3 id="评价-精巧而严谨">评价：精巧而严谨</h3>
+
+<p>大量使用 IIFE 限制一些语句及变量的生效范围</p>
+
+<p>大量使用括号，&amp;&amp;，||，逗号运算符精简表达式语句</p>
+
+<p>精致的用后即焚初始化函数，减少了变量和内存的冗余</p>
+
+<p>多方案的替换使程序在不同环境中保持健壮</p>
+
+            </div>
+        </div>
+	</div>
+    <div class="pure-u-1-24 pure-u-md-1-6"></div>
+</div>
+
+<div class="footer pure-g">
+    <div class="pure-u-1-24 pure-u-md-5-24"></div>
+    <div class="pure-u-11-12 pure-u-md-5-8">
+        <div class="footer-content">
+		  <div class="pure-menu pure-menu-horizontal">
+              <ul>
+			      
+                  <li class="pure-menu-heading" id="foot-name">Jader Tao:</li>
+                  
+				  
+                  
+          
+                  
+                  <li class="pure-menu-item">
+                      <a href="https://github.com/JadeTao" class="pure-menu-link">GitHub</a>
+                  </li>
+                  
+          
+                  
+          
+                  
+          
+                  
+          
+              </ul>
+              <a href="#" class="pure-menu-heading pull-right" id="gototop-btn">↑↑</a>
+          </div>
+		  
+		</div>
+	  </div>
+      <div class="pure-u-1-24 pure-u-md-1-6"></div>
+</div>
+
+
+<script src="http://jadetao.github.io/js/jquery.min.js" type="text/javascript"></script>
+<script src="http://jadetao.github.io/js/jquery.timeago.js" type="text/javascript"></script>
+<script type="text/javascript">
+  $(function(){
+    $("time.timeago").timeago();
+  })
+  $("#toggle-btn").click(function(){
+    $("#toggle-content").toggle();
+    if($(this).html() === "☰") {
+        $(this).html("X")
+    } else {
+        $(this).html("☰")
+    }
+  });
+  $(window).resize(function(){
+    if(window.innerWidth > 768) {
+      $(".desktop").removeAttr("style");
+    }
+  });
+</script>
+
+</body>
+</html>
+

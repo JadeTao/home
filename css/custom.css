@@ -210,9 +210,11 @@ h6 {
   .desktop {
     display: none;
   }
+
   .mobile {
     display: block;
   }
+
   #toggle-btn {
     display: inline-block;
     float: right;
@@ -221,11 +223,13 @@ h6 {
     color: #484848;
     font-weight: bold;
   }
+
   #toggle-content li {
     clear: both;
     height: auto;
     background-color: rgb(249, 249, 249);
   }
+
   #toggle-home {
     display: inline-block;
   }
@@ -235,7 +239,27 @@ h6 {
   .mobile {
     display: none;
   }
+
   .desktop {
     display: block;
   }
+}
+
+.post-content blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  color: #646464;
+  border-left: 3px solid #D3D3D3;
+}
+
+.post-content p code {
+  color: #c7254e;
+  padding: 2px 4px;
+  background-color: #f6f6f6;
+  border: none;
+  font-size: 13px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  vertical-align: middle;
+  font-family: Menlo,Monaco,Consolas,Courier New,monospace;
 }
