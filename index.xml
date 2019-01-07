@@ -2,21 +2,33 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Jader</title>
-    <link>http://jadetao.github.io/</link>
+    <link>https://blog.jader.xyz/</link>
     <description>Recent content on Jader</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 19 Dec 2018 15:21:55 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 07 Jan 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://jadetao.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://blog.jader.xyz/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>TypeScript 中继承的实现</title>
-      <link>http://jadetao.github.io/post/how-does-typescript-entend/</link>
-      <pubDate>Wed, 19 Dec 2018 15:21:55 +0800</pubDate>
+      <title>&lt;译&gt; 英雄项目的 NativeScript 迁移</title>
+      <link>https://blog.jader.xyz/post/ns-tutorial/</link>
+      <pubDate>Mon, 07 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://jadetao.github.io/post/how-does-typescript-entend/</guid>
+      <guid>https://blog.jader.xyz/post/ns-tutorial/</guid>
+      <description>译者注: 本文是我为 Stanimira Vlaeva from NativeScript 在 ng china 2018 workshop 翻译的讲稿。原文，翻译。
+  英雄项目的 NativeScript 迁移之旅   欢迎来到英雄项目 NativeScript 化迁移之旅的教程！你可以学到如何将你的 Angular web 项目扩展成能运行在 Android 和 iOS 上的应用。
+ 准备 NativeScript 配置 你需要 NativeScript CLI 和一台 Android 或 iOS 物理设备来完成这个教程。
+ 运行下面的命令来安装 NativeScript CLI:  npm install -g nativescript@latest   在等待 npm install 的过程中，你可以拿起手机安装两个配合运行的 app：     app Android iOS     NativeScript Preview Google Play App Store   NativeScript Playground Google Play App Store    Angular 配置 Angular CLI 提供了一些方便迁移和管理 Angular 项目的命令。 NativeScript 用自身的 schematics 集合扩展了 Angular CLI 的内置命令。通过执行下面的命令来安装 Angular CLI 和 NativeScript 扩展。</description>
+    </item>
+    
+    <item>
+      <title>TypeScript 中继承的实现</title>
+      <link>https://blog.jader.xyz/post/how-does-typescript-entend/</link>
+      <pubDate>Wed, 19 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.jader.xyz/post/how-does-typescript-entend/</guid>
       <description>TypeScript 中继承的实现 TL;DR
 末尾有总结。
 这篇文章我会探究 TypeScript 中 extends 的实现机理。
@@ -30,10 +42,10 @@
     
     <item>
       <title>EOS in ReactNative</title>
-      <link>http://jadetao.github.io/post/eos-in-rn/</link>
-      <pubDate>Fri, 09 Nov 2018 22:26:52 +0800</pubDate>
+      <link>https://blog.jader.xyz/post/eos-in-rn/</link>
+      <pubDate>Sat, 10 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://jadetao.github.io/post/eos-in-rn/</guid>
+      <guid>https://blog.jader.xyz/post/eos-in-rn/</guid>
       <description>EOS in ReactNative 最近遇到了要在 ReactNative 中使用 eosjs 的需求，官方只提供了 node 环境（CommonJS）和 browser 环境（UMD）的包，而 ReactNative 的模块系统则是 node-haste，一个类似 CommonJS 的模块系统。写篇文章记录一下问题的解决过程，文章内不再赘述 CommonJS AMD UMD 等模块系统的区别和应用。
 背景 EOS，可以理解为 Enterprise Operation System，即为商用分布式应用设计的一款区块链操作系统。EOS 是引入的一种新的区块链架构，旨在实现分布式应用的性能扩展，被称为区块链 3.0。
 EOS 的核心组成是 nodeos 和 cleos。nodeos 是运行在服务端的区块链节点组件，是 EOSIO 系统的核心进程，可以通过它运行一个节点。nodeos 运行后会暴露出一系列 http 接口，官方称之为 rpc API，可以通过其进行查询及 push transaction 等操作。cleos 是对链进行操作的命令行工具，本质上也是在调用 nodeos 暴露出来的 API，但功能更丰富，可以进行管理钱包、创建账户等敏感性操作。cleos 可以通过指定链的 API 地址来对不同的链进行操作，这更说明 cleos 本质上调用了 nodeos 暴露的 API。
@@ -42,10 +54,10 @@ CRUD，除了检索外，所有涉及状态的变更都是由 action 完成的�
     
     <item>
       <title>关于闭包(上篇)</title>
-      <link>http://jadetao.github.io/post/closure1/</link>
-      <pubDate>Wed, 01 Aug 2018 19:56:52 +0800</pubDate>
+      <link>https://blog.jader.xyz/post/closure1/</link>
+      <pubDate>Wed, 01 Aug 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://jadetao.github.io/post/closure1/</guid>
+      <guid>https://blog.jader.xyz/post/closure1/</guid>
       <description>为什么写这篇文章：网上关于闭包的解释五花八门，很多人自己往往也未清楚闭包，就尝试用蹩脚的语言去描述它，而闭包是一个相对抽象的、跨越语言的概念，网上的这些说法往往夹带了JS的私货。所以本篇是我整理的三点关于闭包的权威资料，并没有自己的私货。下面的资料有一些有趣的分歧，如果你发现了并且有兴趣与我探讨一下，欢迎联系我。
 一、MDN 英文版：
 Closures are functions that refer to independent (free) variables (variables that are used locally, but defined in an enclosing scope). In other words, these functions &amp;lsquo;remember&amp;rsquo; the environment in which they were created.

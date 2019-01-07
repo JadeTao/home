@@ -3,44 +3,49 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://jadetao.github.io/post/how-does-typescript-entend/</loc>
-    <lastmod>2018-12-19T15:21:55+08:00</lastmod>
+    <loc>https://blog.jader.xyz/post/ns-tutorial/</loc>
+    <lastmod>2019-01-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://jadetao.github.io/post/eos-in-rn/</loc>
-    <lastmod>2018-11-09T22:26:52+08:00</lastmod>
+    <loc>https://blog.jader.xyz/post/how-does-typescript-entend/</loc>
+    <lastmod>2018-12-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://jadetao.github.io/about/</loc>
+    <loc>https://blog.jader.xyz/post/eos-in-rn/</loc>
+    <lastmod>2018-11-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.jader.xyz/about/</loc>
     <lastmod>2018-08-01T20:48:55+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://jadetao.github.io/post/closure1/</loc>
-    <lastmod>2018-08-01T19:56:52+08:00</lastmod>
+    <loc>https://blog.jader.xyz/post/closure1/</loc>
+    <lastmod>2018-08-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://jadetao.github.io/categories/</loc>
+    <loc>https://blog.jader.xyz/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://jadetao.github.io/</loc>
-    <lastmod>2018-12-19T15:21:55+08:00</lastmod>
+    <loc>https://blog.jader.xyz/</loc>
+    <lastmod>2019-01-07T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://jadetao.github.io/post/</loc>
-    <lastmod>2018-12-19T15:21:55+08:00</lastmod>
+    <loc>https://blog.jader.xyz/post/</loc>
+    <lastmod>2019-01-07T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://jadetao.github.io/tags/</loc>
+    <loc>https://blog.jader.xyz/tags/</loc>
     <priority>0</priority>
   </url>
   
